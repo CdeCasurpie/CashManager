@@ -121,14 +121,12 @@ erDiagram
 From the diagram we can set the models:
 
 - User model, with the fields: username and password.
-
 | User |          |        |
 | ---- | -------- | ------ |
 | PK   | username | string |
 |      | password | string |
 
 - Expense model, with the fields: username, date, value, description and category_name.
-
 | Expense |               |        |
 | ------- | ------------- | ------ |
 | FK      | username      | string |
@@ -138,7 +136,6 @@ From the diagram we can set the models:
 | FK      | category_name | string |
 
 - Budget model, with the fields: id, username, value, start_date, end_date.
-
 | Budget |            |        |
 | ------ | ---------- | ------ |
 | PK     | id         | int    |
@@ -148,7 +145,6 @@ From the diagram we can set the models:
 |        | end_date   | date   |
 
 - Saving model, with the fields: username, date and value.
-
 | Saving |          |        |
 | ------ | -------- | ------ |
 | PK, FK | date     | date   |
@@ -156,7 +152,6 @@ From the diagram we can set the models:
 |        | value    | float  |
 
 - Category model, with the fields: name and username.
-
 | Category |          |        |
 | -------- | -------- | ------ |
 | PK       | name     | string |
