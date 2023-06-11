@@ -121,7 +121,7 @@ erDiagram
 From the diagram we can set the models:
 
 - User model, with the fields: username and password.
-
+  
   | User |          |        |
   | ---- | -------- | ------ |
   | PK   | username | string |
@@ -131,8 +131,8 @@ From the diagram we can set the models:
   
   | Expense |               |        |
   | ------- | ------------- | ------ |
-  | FK      | username      | string |
-  | FK      | date          | date   |
+  | PK, FK  | username      | string |
+  | PK      | date          | date   |
   |         | value         | float  |
   |         | description   | string |
   | FK      | category_name | string |
@@ -159,44 +159,96 @@ From the diagram we can set the models:
   
   | Category |          |        |
   | -------- | -------- | ------ |
-  | PK       | name     | string |
+  | PK       | id       | int    |
+  |          | name     | string |
   | FK       | username | string |
 
 ### Endpoints:
 
 The endpoints will be used to interact with the database. So they have to follow the models rules. 
 
-- `/user`:
-  
+
+#### Basic endpoints:
+
+- `/users`:
   - `GET`: Get the current user.
   - `POST`: Create a new user.
   - `PUT`: Update the current user.
   - `DELETE`: Delete the current user.
 
-- `/Expense`:
-  
-  - `GET`: Get all the expenses of the current user.
-  - `POST`: Create a new expense for the current user.
-  - `PUT`: Update an expense of the current user.
-  - `DELETE`: Delete an expense of the current user.
+- `/Expenses`:
+  - `GET`: Get all the expenses.
+  - `POST`: Create a new expense.
+  - `DELETE`: Delete all the expenses.
 
-- `/Budget`:
-  
-  - `GET`: Get all the budgets of the current user.
-  - `POST`: Create a new budget for the current user.
-  - `PUT`: Update a budget of the current user.
-  - `DELETE`: Delete a budget of the current user.
+- `/Budgets`:
+  - `GET`: Get all the budgets.
+  - `POST`: Create a new budget.
+  - `DELETE`: Delete all the budgets.
 
-- `/Saving`:
-  
-  - `GET`: Get all the savings of the current user.
-  - `POST`: Create a new saving for the current user.
-  - `PUT`: Update a saving of the current user.
-  - `DELETE`: Delete a saving of the current user.
+- `/Savings`:
+  - `GET`: Get all the savings.
+  - `POST`: Create a new saving.
+  - `DELETE`: Delete all the savings.
 
-- `/Category`:
-  
-  - `GET`: Get all the categories of the current user.
-  - `POST`: Create a new category for the current user.
-  - `PUT`: Update a category of the current user.
-  - `DELETE`: Delete a category of the current user.
+- `/Categories`:
+  - `GET`: Get all the categories.
+  - `POST`: Create a new category.
+  - `DELETE`: Delete all the categories.
+
+
+#### Advanced endpoints:
+
+- `/users/<username>`:
+  - `GET`: Get a user by username.
+  - `DELETE`: Delete a user by username.
+
+- `/Expenses/<username>/<date>`:
+  - `GET`: Get an expense by username and date.
+  - `DELETE`: Delete an expense by username and date.
+  - `PATCH`: Update an expense by username and date.
+
+- `/Budgets/<username>/<id>`:
+  - `GET`: Get a budget by username and id.
+  - `DELETE`: Delete a budget by username and id.
+  - `PATCH`: Update a budget by username and id.
+
+- `/Savings/<username>/<date>`:
+  - `GET`: Get a saving by username and date.
+  - `DELETE`: Delete a saving by username and date.
+  - `PATCH`: Update a saving by username and date.
+
+- `/Categories/<id>`:
+  - `GET`: Get a category by id.
+  - `DELETE`: Delete a category by id.
+  - `PATCH`: Update a category by id.
+
+- `/users/<username>/expenses`:
+  - `GET`: Get the expenses of a user.
+  - `DELETE`: Delete all the expenses of a user.
+
+- `/users/<username>/budgets`:
+  - `GET`: Get the budgets of a user.
+  - `DELETE`: Delete all the budgets of a user.
+  - `POST`: Create a new budget for a user.
+
+- `/users/<username>/savings`:
+  - `GET`: Get the savings of a user.
+  - `DELETE`: Delete all the savings of a user.
+  - `POST`: Create a new saving for a user.
+
+- `/users/<username>/categories`:
+  - `GET`: Get the categories of a user.
+  - `DELETE`: Delete all the categories of a user.
+  - `POST`: Create a new category for a user.
+
+
+## Frontend
+
+The frontend will be a web application that will consume the backend API. It will be developed using Vue.js. The frontend will have the following views:
+
+- Login view: The user will be able to login or register.
+- Home view: The user will be able to make expenses and see its savings and budgets. For each Expen
+- Budgets view: The user will be able to create, update and delete budgets.
+- Savings view: The user will be able to see its savings.
+- Config view: The user will be able to update its username and password.
