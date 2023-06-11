@@ -121,41 +121,46 @@ erDiagram
 From the diagram we can set the models:
 
 - User model, with the fields: username and password.
-| User |          |        |
-| ---- | -------- | ------ |
-| PK   | username | string |
-|      | password | string |
+
+  | User |          |        |
+  | ---- | -------- | ------ |
+  | PK   | username | string |
+  |      | password | string |
 
 - Expense model, with the fields: username, date, value, description and category_name.
-| Expense |               |        |
-| ------- | ------------- | ------ |
-| FK      | username      | string |
-| FK      | date          | date   |
-|         | value         | float  |
-|         | description   | string |
-| FK      | category_name | string |
+  
+  | Expense |               |        |
+  | ------- | ------------- | ------ |
+  | FK      | username      | string |
+  | FK      | date          | date   |
+  |         | value         | float  |
+  |         | description   | string |
+  | FK      | category_name | string |
 
 - Budget model, with the fields: id, username, value, start_date, end_date.
-| Budget |            |        |
-| ------ | ---------- | ------ |
-| PK     | id         | int    |
-| PK, FK | username   | string |
-|        | value      | float  |
-|        | start_date | date   |
-|        | end_date   | date   |
+  
+  | Budget |            |        |
+  | ------ | ---------- | ------ |
+  | PK     | id         | int    |
+  | PK, FK | username   | string |
+  |        | value      | float  |
+  |        | start_date | date   |
+  |        | end_date   | date   |
 
 - Saving model, with the fields: username, date and value.
-| Saving |          |        |
-| ------ | -------- | ------ |
-| PK, FK | date     | date   |
-| PK, FK | username | string |
-|        | value    | float  |
+  
+  | Saving |          |        |
+  | ------ | -------- | ------ |
+  | PK, FK | date     | date   |
+  | PK, FK | username | string |
+  |        | value    | float  |
 
 - Category model, with the fields: name and username.
-| Category |          |        |
-| -------- | -------- | ------ |
-| PK       | name     | string |
-| FK       | username | string |
+  
+  | Category |          |        |
+  | -------- | -------- | ------ |
+  | PK       | name     | string |
+  | FK       | username | string |
 
 ### Endpoints:
 
