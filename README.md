@@ -161,3 +161,42 @@ From the diagram we can set the models:
 | -------- | -------- | ------ |
 | PK       | name     | string |
 | FK       | username | string |
+
+### Endpoints:
+
+The endpoints will be used to interact with the database. So they have to follow the models rules. 
+
+- `/user`:
+  
+  - `GET`: Get the current user.
+  - `POST`: Create a new user.
+  - `PUT`: Update the current user.
+  - `DELETE`: Delete the current user.
+
+- `/Expense`:
+  
+  - `GET`: Get all the expenses of the current user.
+  - `POST`: Create a new expense for the current user.
+  - `PUT`: Update an expense of the current user.
+  - `DELETE`: Delete an expense of the current user.
+
+- `/Budget`:
+  
+  - `GET`: Get all the budgets of the current user.
+  - `POST`: Create a new budget for the current user.
+  - `PUT`: Update a budget of the current user.
+  - `DELETE`: Delete a budget of the current user.
+
+- `/Saving`:
+  
+  - `GET`: Get all the savings of the current user.
+  - `POST`: Create a new saving for the current user.
+  - `PUT`: Update a saving of the current user.
+  - `DELETE`: Delete a saving of the current user.
+
+- `/Category`:
+  
+  - `GET`: Get all the categories of the current user.
+  - `POST`: Create a new category for the current user.
+  - `PUT`: Update a category of the current user.
+  - `DELETE`: Delete a category of the current user.
