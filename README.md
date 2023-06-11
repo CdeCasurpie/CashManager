@@ -155,6 +155,8 @@ From the diagram we can set the models:
 | PK, FK | username | string |
 |        | value    | float  |
 
+- Category model, with the fields: name and username.
+
 | Category |          |        |
 | -------- | -------- | ------ |
 | PK       | name     | string |
