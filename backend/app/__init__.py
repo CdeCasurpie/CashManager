@@ -43,7 +43,6 @@ def create_app(test_config=None):
         try:
             if len(inputs) == 0:
                 users = User.query.all()
-                users = [user.serialize() for user in users]
             else:
                 if 'username' in inputs and 'role_name' not in inputs:
                     users = User.query.filter(User.username.like('%' + inputs['username'] + '%')).all()
@@ -55,7 +54,7 @@ def create_app(test_config=None):
                     code = 400
                     error_list.append("Filter can only be done by username or role_name")
 
-                users = [user.serialize() for user in users]
+            users = [user.serialize() for user in users]
 
         except:
             code = 500
