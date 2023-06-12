@@ -11,15 +11,31 @@ def setup_db(app, database_path):
     db.init_app(app)
     db.create_all()
 
+
+# - Role model, with the fields: name and description.
+
+class Role(db.Model):
+    __tablename__ = 'roles'
+
+    name = db.Column(db.String(80), primary_key=True)
+    description = db.Column(db.String(200), nullable=False)
+
+
 # - User model, with the fields: username and password.
 
 class User(db.Model):
     __tablename__ = 'users'
 
     username = db.Column(db.String(80), primary_key=True)
-    password = db.Column(db.String(80), nullable=False)
+    password = db.Column(db.String(200), nullable=False)
 
+    role_name = db.Column(db.String(80), db.ForeignKey('roles.name'), nullable=False)
 
+    def serialize(self):
+        return {
+            'username': self.username,
+            'role_name': self.role_name
+        }
 
 # - Expense model, with the fields: username, date, value, description and category_name.
 
@@ -70,6 +86,13 @@ class Category(db.Model):
     __tablename__ = 'categories'
 
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    
+
     name = db.Column(db.String(80), nullable=False)
     username = db.Column(db.String(80), db.ForeignKey('users.username'))
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'username': self.username
+        }
