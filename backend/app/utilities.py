@@ -1,12 +1,12 @@
 from functools import wraps
-from flask import session, abort
+from flask import session, abort, jsonify
 
 def login_required(f):
 	@wraps(f)
 	def decorated_function(*args, **kwargs):
 		#verify if user is logged in
 		if not(session.get('username')):
-			abort(401)
+			return jsonify({'message': 'Unauthorized, login is required'}), 401
 		return f(*args, **kwargs)
 	return decorated_function
 

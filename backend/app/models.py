@@ -47,9 +47,18 @@ class Expense(db.Model):
     value = db.Column(db.Float, nullable=False)
     description = db.Column(db.String(80), nullable=True)
     
-    username = db.Column(db.String(80), db.ForeignKey('users.username'))
-    category_id = db.Column(db.String(36), db.ForeignKey('categories.id'))
+    username = db.Column(db.String(80), db.ForeignKey('users.username'), nullable=False)
+    category_id = db.Column(db.String(36), db.ForeignKey('categories.id'), nullable=True)
 
+    def serialize(self):
+        return {
+            'id': self.id,
+            'date': self.date,
+            'value': self.value,
+            'description': self.description,
+            'username': self.username,
+            'category_id': self.category_id
+        }
 
 
 # - Budget model, with the fields: id, username, value, start_date, end_date.

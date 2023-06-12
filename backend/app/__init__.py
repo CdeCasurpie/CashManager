@@ -11,6 +11,8 @@ from .utilities import *
 
 import os
 import sys
+from sqlalchemy import extract
+from datetime import datetime
 
 
 def create_app(test_config=None):
@@ -101,11 +103,11 @@ def create_app(test_config=None):
                 else:
                     expenses = Expense.query.filter_by(username=inputs['username']).all()
                     expenses = [expense.serialize() for expense in expenses]
+                if len(expenses) == 0:
+                    code = 404
             except:
                 code = 500
 
-        if len(expenses) == 0:
-            code = 404
 
         if code == 200:
             return jsonify({
@@ -130,7 +132,7 @@ def create_app(test_config=None):
 
         if not('username' in inputs or session.get('role_name') == 'admin'):
             code = 400
-            error_message = "username is required"
+            error_message = "username is required on args"
         else:
             try:
                 if session.get('role_name') == 'admin':
@@ -210,7 +212,6 @@ def create_app(test_config=None):
             abort(code)
 
 
-
     @app.route('/categories', methods=['GET'])
     @login_required
     def get_categories():
@@ -221,7 +222,7 @@ def create_app(test_config=None):
 
         if not('username' in inputs or session.get('role_name') == 'admin'):
             code = 400 # Bad Request
-            error_message = "username is required"
+            error_message = "username is required on args"
         else:
             try:
                 if session.get('role_name') == 'admin':
@@ -236,13 +237,14 @@ def create_app(test_config=None):
                 else:
                     categories = Category.query.filter_by(username=inputs['username']).all()
                     categories = [category.serialize() for category in categories]
+                if len(categories) == 0:
+                    code = 404
+
             except:
                 code = 500
                 print(sys.exc_info())
 
-        if len(categories) == 0:
-            code = 404
-
+        
         if code == 400:
             return jsonify({
                 'success': False,
@@ -257,7 +259,31 @@ def create_app(test_config=None):
             abort(code)
 
 
+    @app.route('/expenses/<day>/<month>/<year>', methods=['GET'])
+    @login_required
+    def get_expenses_by_date(day, month, year):
+        username = session.get('username')
+        code = 200
+        expenses = []
+        try:
+            # filter by date (day, month and year)
+            expenses = Expense.query.filter_by(username=username).filter(
+                        extract('day', Expense.date) == day,
+                        extract('month', Expense.date) == month,
+                        extract('year', Expense.date) == year
+                    ).all()
 
+            expenses = [expense.serialize() for expense in expenses]
+            if len(expenses) == 0:
+                code = 404
+        except:
+            code = 500
+            print(sys.exc_info())
+
+        if code == 200:
+            return jsonify({'success': True, 'expenses': expenses})
+        else:
+            abort(code)
 
     # POST
     # ----------------------------------------------------------------
@@ -271,6 +297,7 @@ def create_app(test_config=None):
         try:
             data = {}
 
+            # Check if request has json data
             if request.json:
                 data = request.json
 
@@ -287,29 +314,28 @@ def create_app(test_config=None):
             if error_list:
                 code = 400
             else:
+                # Check if username already exists
                 if User.query.filter_by(username=data['username']).first():
                     code = 400
                     error_list.append('username already exists')
                 else:
-
+                    # Create new user
                     user = User(
                         username=data['username'],
                         password=data['password'],
                         role_name='user'
                     )
-
                     db.session.add(user)
                     db.session.commit()
 
                     user_data = user.serialize()
-                    session['username'] = user_data['username']
-                    session['role_name'] = user_data['role_name']
 
         except Exception as e:
             db.session.rollback()
             print(sys.exc_info())
             code = 500
 
+        # Returns
         if code == 400:
             return jsonify({'success': False, 'errors': error_list}), code
         elif code != 201:
@@ -317,6 +343,77 @@ def create_app(test_config=None):
         else:
             return jsonify({'success': True, 'user': user_data}), code
 
+    @app.route('/expenses', methods=['POST'])
+    @login_required
+    def post_expenses():
+        username = session.get('username')
+        error_list = []
+        code = 201
+        expense_data = {}
+
+        value = request.json.get('value', None)
+        description = request.json.get('description', None)
+        category_id = request.json.get('category_id', None)
+
+        if not(value):
+            error_list.append('value is required')
+
+        if len(error_list) > 0:
+            return jsonify({'success': False, 'errors': error_list}), 400
+
+        try:
+            new_expense = Expense(value=value, description=description, category_id=category_id, username=username)
+
+            db.session.add(new_expense)
+            db.session.commit()
+
+        except:
+            db.session.rollback()
+            print(sys.exc_info())
+            code = 500
+
+        if code == 201:
+            return jsonify({'success': True, 'expense': new_expense.serialize()}), code
+        else:
+            abort(code)
+
+    @app.route('/categories', methods=['POST'])
+    @login_required
+    def post_categories():
+        username = session.get('username')
+        error_list = []
+        code = 201
+        category_data = {}
+
+        name = request.json.get('name', None)
+
+        if not(name):
+            error_list.append('name is required')
+
+        if len(error_list) > 0:
+            return jsonify({'success': False, 'errors': error_list}), 400
+
+        try:
+            new_category = Category(name=name, username=username)
+
+            db.session.add(new_category)
+            db.session.commit()
+            category_data = new_category.serialize()
+        except:
+            db.session.rollback()
+            print(sys.exc_info())
+            code = 500
+
+        if code == 201:
+            return jsonify({'success': True, 'category': new_category.serialize()}), code
+        else:
+            abort(code)
+
+    @app.route('/budgets', methods=['POST'])
+    @login_required
+    def post_budgets():
+        abort(501)
+        pass
 
     # DELETE
     # ----------------------------------------------------------------
@@ -402,11 +499,40 @@ def create_app(test_config=None):
     # APP ROUTES
     # ===============================================================
 
-    # GET
+    # Login
     # ----------------------------------------------------------------
 
+    @app.route('/login', methods=['POST'])
+    def login():
+        username = request.json.get('username', None)
+        password = request.json.get('password', None)
+        error_list = []
 
+        # Check if inputs were provided
+        if not username:
+            error_list.append('username is required')
+        if not password:
+            error_list.append('password is required')
 
+        if len(error_list) > 0:
+            return jsonify({'success': False, 'errors': error_list}), 400
+
+        search_user = User.query.filter_by(username=username).first()
+
+        # Validate inputs
+        if search_user is None:
+            session.clear()
+            return jsonify({'success': False, 'message': 'User does not exist'}), 404
+
+        if search_user.password != password:
+            session.clear()
+            return jsonify({'success': False, 'message': 'Wrong password'}), 401
+
+        # set cookies
+        session['username'] = search_user.username
+        session['role_name'] = search_user.role_name
+
+        return jsonify({'success': True, 'user':search_user.serialize()}), 200
 
 
 
@@ -426,7 +552,7 @@ def create_app(test_config=None):
         return jsonify({
             'success': False,
             'error': 401,
-            'message': "Unauthorized"
+            'message': 'Unauthorized'
         }), 401;
 
 
@@ -455,7 +581,13 @@ def create_app(test_config=None):
             'message': "Method not allowed"
         }), 405;
 
-
+    @app.errorhandler(415)
+    def unsupported_media_type(error):
+        return jsonify({
+            'success': False,
+            'error': 415,
+            'message': "Unsupported media type"
+        }), 415;
 
     @app.errorhandler(500)
     def internal_server_error(error):

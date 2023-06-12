@@ -180,22 +180,18 @@ This are basic endpoints that will be used to interact with the database. They w
 
 - `/expenses`:
   - `GET`: Get all the expenses.
-  - `POST`: Create a new expense.
   - `DELETE`: Delete all the expenses.
 
 - `/budgets`:
   - `GET`: Get all the budgets.
-  - `POST`: Create a new budget.
   - `DELETE`: Delete all the budgets.
 
 - `/savings`:
   - `GET`: Get all the savings.
-  - `POST`: Create a new saving.
   - `DELETE`: Delete all the savings.
 
 - `/categories`:
   - `GET`: Get all the categories.
-  - `POST`: Create a new category.
   - `DELETE`: Delete all the categories.
 
 
@@ -206,7 +202,7 @@ This are basic endpoints that will be used to interact with the database. They w
   - `PATCH`: Update a user by username.
   - `DELETE`: Delete a user by username.
 
-- `/expenses/<id>`:
+- `/expenses/<username>/<id>`:
   - `GET`: Get an expense by username and date.
   - `DELETE`: Delete an expense by username and date.
   - `PATCH`: Update an expense by username and date.
@@ -244,6 +240,9 @@ This are basic endpoints that will be used to interact with the database. They w
   - `GET`: Get the categories of a user.
   - `DELETE`: Delete all the categories of a user.
   - `POST`: Create a new category for a user.
+
+- `/login`
+  - `POST`: Login a user.
 
 
 ## Frontend
