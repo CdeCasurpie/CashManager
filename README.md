@@ -127,22 +127,23 @@ From the diagram we can set the models:
   | PK   | username | string |
   |      | password | string |
 
-- Expense model, with the fields: username, date, value, description and category_name.
+- Expense model, with the fields: username, id, date, value, description and category_name.
   
   | Expense |               |        |
   | ------- | ------------- | ------ |
-  | PK, FK  | username      | string |
-  | PK      | date          | date   |
+  | PK      | id            | uuid   |
+  | FK      | username      | string |
+  |         | date          | date   |
   |         | value         | float  |
   |         | description   | string |
-  | FK      | category_name | string |
+  | FK      | category_id   | string |
 
 - Budget model, with the fields: id, username, value, start_date, end_date.
   
   | Budget |            |        |
   | ------ | ---------- | ------ |
-  | PK     | id         | int    |
-  | PK, FK | username   | string |
+  | PK     | id         | uuid   |
+  | FK     | username   | string |
   |        | value      | float  |
   |        | start_date | date   |
   |        | end_date   | date   |
@@ -151,15 +152,16 @@ From the diagram we can set the models:
   
   | Saving |          |        |
   | ------ | -------- | ------ |
-  | PK, FK | date     | date   |
-  | PK, FK | username | string |
+  | PK     | id       | uuid   |
+  | FK     | username | string |
+  |        | date     | date   |
   |        | value    | float  |
 
 - Category model, with the fields: name and username.
   
   | Category |          |        |
   | -------- | -------- | ------ |
-  | PK       | id       | int    |
+  | PK       | id       | uuid   |
   |          | name     | string |
   | FK       | username | string |
 
@@ -169,29 +171,29 @@ The endpoints will be used to interact with the database. So they have to follow
 
 
 #### Basic endpoints:
+This are basic endpoints that will be used to interact with the database. They will be used to create, read, update and delete the models. But they are not necessary for the app to work. Just to manage the data.
 
 - `/users`:
   - `GET`: Get the current user.
   - `POST`: Create a new user.
-  - `PUT`: Update the current user.
   - `DELETE`: Delete the current user.
 
-- `/Expenses`:
+- `/expenses`:
   - `GET`: Get all the expenses.
   - `POST`: Create a new expense.
   - `DELETE`: Delete all the expenses.
 
-- `/Budgets`:
+- `/budgets`:
   - `GET`: Get all the budgets.
   - `POST`: Create a new budget.
   - `DELETE`: Delete all the budgets.
 
-- `/Savings`:
+- `/savings`:
   - `GET`: Get all the savings.
   - `POST`: Create a new saving.
   - `DELETE`: Delete all the savings.
 
-- `/Categories`:
+- `/categories`:
   - `GET`: Get all the categories.
   - `POST`: Create a new category.
   - `DELETE`: Delete all the categories.
@@ -201,24 +203,25 @@ The endpoints will be used to interact with the database. So they have to follow
 
 - `/users/<username>`:
   - `GET`: Get a user by username.
+  - `PATCH`: Update a user by username.
   - `DELETE`: Delete a user by username.
 
-- `/Expenses/<username>/<date>`:
+- `/expenses/<id>`:
   - `GET`: Get an expense by username and date.
   - `DELETE`: Delete an expense by username and date.
   - `PATCH`: Update an expense by username and date.
 
-- `/Budgets/<username>/<id>`:
+- `/budgets/<username>/<id>`:
   - `GET`: Get a budget by username and id.
   - `DELETE`: Delete a budget by username and id.
   - `PATCH`: Update a budget by username and id.
 
-- `/Savings/<username>/<date>`:
+- `/savings/<username>/<date>`:
   - `GET`: Get a saving by username and date.
   - `DELETE`: Delete a saving by username and date.
   - `PATCH`: Update a saving by username and date.
 
-- `/Categories/<id>`:
+- `/categories/<id>`:
   - `GET`: Get a category by id.
   - `DELETE`: Delete a category by id.
   - `PATCH`: Update a category by id.
