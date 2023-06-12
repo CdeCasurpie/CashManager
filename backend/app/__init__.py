@@ -34,15 +34,29 @@ def create_app(test_config=None):
     # ----------------------------------------------------------------
 
     @app.route('/users', methods=['GET'])
-    # @login_required
-    # @admin_required
+    @admin_required
     def get_users():
         code = 200
         users = []
-
+        error_list = []
+        inputs = request.args
         try:
-            users = User.query.all()
-            users = [user.serialize() for user in users]
+            if len(inputs) == 0:
+                users = User.query.all()
+                users = [user.serialize() for user in users]
+            else:
+                if 'username' in inputs and 'role_name' not in inputs:
+                    users = User.query.filter(User.username.like('%' + inputs['username'] + '%')).all()
+                elif 'role_name' in inputs and 'username' not in inputs:
+                    users = User.query.filter_by(role_name=inputs['role_name']).all()
+                elif 'username' in inputs and 'role_name' in inputs:
+                    users = User.query.filter(User.username.like('%' + inputs['username'] + '%')).filter_by(role_name=inputs['role_name']).all()
+                else:
+                    code = 400
+                    error_list.append("Filter can only be done by username or role_name")
+
+                users = [user.serialize() for user in users]
+
         except:
             code = 500
 
@@ -52,9 +66,15 @@ def create_app(test_config=None):
         if code == 200:
             return jsonify({
                 'success': True,
-                'users': users
+                'users': users,
+                'message': 'You can search by username or role_name'
             }), code
-        else:
+        elif code == 400:
+            return jsonify({
+                'success': False,
+                'errors': error_list
+            })
+        else: 
             abort(code)
 
     @app.route('/expenses', methods=['GET'])
