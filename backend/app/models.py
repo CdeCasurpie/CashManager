@@ -70,7 +70,7 @@ class Budget(db.Model):
     
     value = db.Column(db.Float, nullable=False)
     start_date = db.Column(db.DateTime, nullable=False)
-    end_date = db.Column(db.DateTime, nullable=False)
+    end_date = db.Column(db.DateTime, nullable=True)
 
     username = db.Column(db.String(80), db.ForeignKey('users.username'), nullable=False)
 

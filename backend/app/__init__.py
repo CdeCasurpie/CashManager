@@ -412,8 +412,40 @@ def create_app(test_config=None):
     @app.route('/budgets', methods=['POST'])
     @login_required
     def post_budgets():
-        abort(501)
-        pass
+        code = 201
+        value = request.json.get('value', None)
+        start_date = request.json.get('start_date', None)
+        end_date = request.json.get('end_date', None)
+        username = session.get('username')
+
+        budget_data = {}
+
+        error_list = []
+
+        if not(value):
+            error_list.append('value is required')
+
+        if not(start_date):
+            error_list.append('start_date is required')
+
+        if len(error_list) > 0:
+            return jsonify({'success': False, 'errors': error_list}), 400
+
+        try:
+            new_budget = Budget(value=value, start_date=start_date, end_date=end_date, username=username)
+
+            db.session.add(new_budget)
+            db.session.commit()
+            budget_data = new_budget.serialize()
+        except:
+            db.session.rollback()
+            print(sys.exc_info())
+            abort(500)
+
+        if code == 201:
+            return jsonify({'success': True, 'budget': budget_data}), code
+        else:
+            abort(code)
 
     # DELETE
     # ----------------------------------------------------------------
